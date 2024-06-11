@@ -1,4 +1,6 @@
-import { Box, Image, SimpleGrid, Text, Link } from "@chakra-ui/react";
+import { useState } from "react";
+import { Input, InputGroup, InputLeftElement, Box, Image, SimpleGrid, Text, Link } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 
 const products = [
@@ -8,10 +10,32 @@ const products = [
 ];
 
 const Products = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+  };
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery) ||
+    product.description.toLowerCase().includes(searchQuery)
+  );
+
   return (
     <Box p={4}>
+      <InputGroup mb={4}>
+        <InputLeftElement pointerEvents="none">
+          <SearchIcon color="gray.300" />
+        </InputLeftElement>
+        <Input
+          type="text"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+      </InputGroup>
       <SimpleGrid columns={{ sm: 1, md: 3 }} spacing={8}>
-        {products.map(product => (
+        {filteredProducts.map(product => (
           <Box key={product.id} borderWidth="1px" borderRadius="lg" overflow="hidden">
             <Image src={product.image} alt={product.name} />
             <Box p={6}>
